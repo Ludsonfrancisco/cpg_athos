@@ -688,6 +688,250 @@
 
         </section>
 
+        <!-- ─────────────────── ESCALAS POR SETOR ─────────────────── -->
+        <section class="mb-6" x-data="escalasData()" x-init="init()">
+            <div class="card p-5 md:p-6 relative overflow-hidden">
+                <!-- Premium glow -->
+                <div class="absolute -top-20 -right-20 w-40 h-40 bg-brand-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-20 -left-20 w-40 h-40 bg-brand-accent/5 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="flex items-center justify-between mb-5 relative z-10">
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <h2 class="text-base font-bold text-brand-text">Escalas por Setor</h2>
+                            <span class="text-[9px] uppercase tracking-[0.15em] font-bold text-brand-primary bg-brand-amberSoft/70 px-2 py-0.5 rounded-full border border-brand-primary/20">Premium</span>
+                        </div>
+                        <p class="text-xs text-brand-muted mt-0.5">Acompanhe o status das escalas em cada ministério</p>
+                    </div>
+                    <div class="flex items-center gap-1.5 text-[11px] text-brand-muted bg-brand-surfaceSoft px-3 py-1.5 rounded-full">
+                        <span class="w-1.5 h-1.5 bg-brand-green rounded-full" :class="{'animate-pulse': loading}"></span>
+                        <span x-text="loading ? 'Atualizando...' : 'Atualizado há 2 min'"></span>
+                    </div>
+                </div>
+
+                <!-- Stats row -->
+                <div class="grid grid-cols-3 gap-3 mb-5 relative z-10">
+                    <div class="bg-brand-surfaceSoft/60 rounded-xl p-3 text-center border border-brand-line/40">
+                        <span class="block text-lg font-bold text-brand-green" x-text="stats.total_ok"></span>
+                        <span class="text-[10px] text-brand-muted font-semibold uppercase tracking-wider">OK</span>
+                    </div>
+                    <div class="bg-brand-surfaceSoft/60 rounded-xl p-3 text-center border border-brand-line/40">
+                        <span class="block text-lg font-bold text-brand-accent" x-text="stats.total_pending"></span>
+                        <span class="text-[10px] text-brand-muted font-semibold uppercase tracking-wider">Pendentes</span>
+                    </div>
+                    <div class="bg-brand-surfaceSoft/60 rounded-xl p-3 text-center border border-brand-line/40">
+                        <span class="block text-lg font-bold text-brand-danger" x-text="stats.total_conflict"></span>
+                        <span class="text-[10px] text-brand-muted font-semibold uppercase tracking-wider">Conflitos</span>
+                    </div>
+                </div>
+
+                <!-- Setores grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-5 relative z-10">
+                    <template x-for="(setor, idx) in setores" :key="idx">
+                        <div class="flex items-center justify-between p-3 rounded-xl transition-all duration-200 cursor-pointer hover:shadow-sm"
+                             :class="setor.status === 'ok' ? 'bg-brand-green/5 border border-brand-green/15' : setor.status === 'pending' ? 'bg-brand-accent/5 border border-brand-accent/15' : 'bg-brand-danger/5 border border-brand-danger/15'"
+                             @click="toggleSetor(idx)">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="w-8 h-8 rounded-lg flex items-center justify-center text-sm flex-shrink-0"
+                                     :class="setor.status === 'ok' ? 'bg-brand-green/15 text-brand-green' : setor.status === 'pending' ? 'bg-brand-accent/15 text-brand-accent' : 'bg-brand-danger/15 text-brand-danger'">
+                                    <span x-text="setor.icone"></span>
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-sm font-semibold text-brand-text truncate" x-text="setor.nome"></p>
+                                    <p class="text-[11px] text-brand-muted mt-0.5">
+                                        <span x-text="setor.escalados + ' escalados'"></span>
+                                        <template x-if="setor.status === 'pending'">
+                                            <span> · <span class="text-brand-accent font-semibold">Pendente</span></span>
+                                        </template>
+                                        <template x-if="setor.status === 'conflict'">
+                                            <span> · <span class="text-brand-danger font-semibold">Conflito detectado</span></span>
+                                        </template>
+                                        <template x-if="setor.status === 'ok'">
+                                            <span> · <span class="text-brand-green font-semibold">OK</span></span>
+                                        </template>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 flex-shrink-0">
+                                <template x-if="setor.status === 'ok'">
+                                    <svg class="w-5 h-5 text-brand-green" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                </template>
+                                <template x-if="setor.status === 'pending'">
+                                    <svg class="w-5 h-5 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                </template>
+                                <template x-if="setor.status === 'conflict'">
+                                    <svg class="w-5 h-5 text-brand-danger" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"></path></svg>
+                                </template>
+                                <svg class="w-3.5 h-3.5 text-brand-muted transition-transform" :class="setor.expanded ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Detalhes do setor expandido -->
+                <template x-for="(setor, idx) in setores" :key="'det-'+idx">
+                    <div x-show="setor.expanded" x-collapse class="mb-4 relative z-10">
+                        <div class="bg-brand-surfaceSoft/40 rounded-xl p-4 border border-brand-line/40">
+                            <div class="flex items-center justify-between mb-3">
+                                <h4 class="text-sm font-bold text-brand-text" x-text="'Escala — ' + setor.nome"></h4>
+                                <span class="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full"
+                                      :class="setor.status === 'ok' ? 'bg-brand-green/10 text-brand-green' : setor.status === 'pending' ? 'bg-brand-accent/10 text-brand-accent' : 'bg-brand-danger/10 text-brand-danger'"
+                                      x-text="setor.status === 'ok' ? 'Completo' : setor.status === 'pending' ? 'Pendente' : 'Conflito'"></span>
+                            </div>
+                            <div class="space-y-2">
+                                <template x-for="(pessoa, pidx) in setor.pessoas" :key="pidx">
+                                    <div class="flex items-center justify-between py-1.5 px-3 rounded-lg"
+                                         :class="pessoa.conflito ? 'bg-brand-danger/5 border border-brand-danger/10' : 'hover:bg-white/50'">
+                                        <div class="flex items-center gap-2.5">
+                                            <div class="w-6 h-6 rounded-full bg-brand-primary/10 flex items-center justify-center text-[9px] font-bold text-brand-primary uppercase" x-text="pessoa.nome.split(' ').map(w=>w[0]).slice(0,2).join('')"></div>
+                                            <span class="text-xs font-medium text-brand-text" x-text="pessoa.nome"></span>
+                                            <template x-if="pessoa.conflito">
+                                                <span class="text-[9px] font-bold uppercase tracking-wider text-brand-danger bg-brand-danger/8 px-1.5 py-0.5 rounded">⚠ Conflito</span>
+                                            </template>
+                                        </div>
+                                        <div class="flex items-center gap-1.5 text-[11px] text-brand-muted">
+                                            <span x-text="pessoa.funcao"></span>
+                                            <template x-if="pessoa.conflito">
+                                                <span class="text-brand-danger font-semibold" x-text="'· Também em: ' + pessoa.outros_ministerios"></span>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                            <template x-if="setor.status === 'pending'">
+                                <div class="mt-3 pt-3 border-t border-brand-line/40">
+                                    <p class="text-[11px] text-brand-muted flex items-center gap-1.5">
+                                        <svg class="w-3.5 h-3.5 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        <span>Aguardando <span class="font-semibold text-brand-accent" x-text="setor.faltam"></span> voluntário(s) confirmarem escala.</span>
+                                    </p>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Ministérios sem escala e alertas de conflito -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 relative z-10">
+                    <div class="bg-brand-accent/5 rounded-xl p-3.5 border border-brand-accent/15">
+                        <div class="flex items-center gap-2 mb-2">
+                            <svg class="w-4 h-4 text-brand-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <h4 class="text-xs font-bold text-brand-text uppercase tracking-wider">Sem escala cadastrada</h4>
+                        </div>
+                        <div class="space-y-1.5">
+                            <template x-for="(item, i) in semEscala" :key="i">
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="text-brand-muted flex items-center gap-1.5">
+                                        <span class="w-1 h-1 bg-brand-accent rounded-full"></span>
+                                        <span x-text="item"></span>
+                                    </span>
+                                    <span class="text-[10px] font-semibold text-brand-accent bg-brand-accent/8 px-1.5 py-0.5 rounded">Aguardando</span>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                    <div class="bg-brand-danger/5 rounded-xl p-3.5 border border-brand-danger/15">
+                        <div class="flex items-center gap-2 mb-2">
+                            <svg class="w-4 h-4 text-brand-danger" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z"></path></svg>
+                            <h4 class="text-xs font-bold text-brand-text uppercase tracking-wider">Pessoas em conflito</h4>
+                        </div>
+                        <div class="space-y-1.5">
+                            <template x-for="(pessoa, i) em conflitos" :key="i">
+                                <div class="flex items-center justify-between text-xs">
+                                    <span class="text-brand-text font-medium" x-text="pessoa.nome"></span>
+                                    <span class="text-[10px] text-brand-danger" x-text="pessoa.ministerios"></span>
+                                </div>
+                            </template>
+                            <div x-show="conflitos.length === 0" class="text-xs text-brand-muted text-center py-2">
+                                <span class="text-brand-green font-semibold">✅ Nenhum conflito detectado</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <script>
+            function escalasData() {
+                return {
+                    loading: false,
+                    stats: { total_ok: 0, total_pending: 0, total_conflict: 0 },
+                    setores: [],
+                    semEscala: [],
+                    conflitos: [],
+
+                    init() {
+                        this.setores = [
+                            {
+                                nome: 'Louvor & Artes', icone: '🎵', status: 'ok', escalados: 18, expanded: false,
+                                pessoas: [
+                                    { nome: 'Ana Oliveira', funcao: 'Vocalista', conflito: false },
+                                    { nome: 'Carlos Santos', funcao: 'Baixista', conflito: true, outros_ministerios: 'Mídia' },
+                                    { nome: 'Marina Costa', funcao: 'Tecladista', conflito: false }
+                                ]
+                            },
+                            {
+                                nome: 'Mídia & Transmissão', icone: '📺', status: 'conflict', escalados: 12, expanded: false,
+                                pessoas: [
+                                    { nome: 'Carlos Santos', funcao: 'Operador de Câmera', conflito: true, outros_ministerios: 'Louvor & Artes' },
+                                    { nome: 'Pedro Almeida', funcao: 'Transmissão', conflito: false },
+                                    { nome: 'Lucas Nunes', funcao: 'Som', conflito: true, outros_ministerios: 'Infantil' }
+                                ]
+                            },
+                            {
+                                nome: 'Infantil', icone: '🧒', status: 'pending', escalados: 8, expanded: false, faltam: 4,
+                                pessoas: [
+                                    { nome: 'Lucas Nunes', funcao: 'Monitor', conflito: true, outros_ministerios: 'Mídia & Transmissão' },
+                                    { nome: 'Julia Ramos', funcao: 'Coordenadora', conflito: false }
+                                ]
+                            },
+                            {
+                                nome: 'Recepção & Acolhimento', icone: '🤝', status: 'ok', escalados: 22, expanded: false,
+                                pessoas: [
+                                    { nome: 'Roberto Lima', funcao: 'Recepcionista', conflito: false },
+                                    { nome: 'Sandra Vieira', funcao: 'Acolhimento', conflito: false }
+                                ]
+                            },
+                            {
+                                nome: 'Intercessão', icone: '🙏', status: 'pending', escalados: 6, expanded: false, faltam: 6,
+                                pessoas: [
+                                    { nome: 'Paulo Sérgio', funcao: 'Líder', conflito: false }
+                                ]
+                            },
+                            {
+                                nome: 'Segurança', icone: '🛡️', status: 'ok', escalados: 10, expanded: false,
+                                pessoas: [
+                                    { nome: 'Marcos Teixeira', funcao: 'Coordenador', conflito: false },
+                                    { nome: 'Felipe Castro', funcao: 'Portaria', conflito: false }
+                                ]
+                            }
+                        ];
+
+                        this.semEscala = ['Ensino & Discipulado', 'Missões', 'Ação Social', 'Dança & Coreografia'];
+                        this.conflitos = [
+                            { nome: 'Carlos Santos', ministerios: 'Louvor · Mídia' },
+                            { nome: 'Lucas Nunes', ministerios: 'Mídia · Infantil' }
+                        ];
+
+                        this.atualizarStats();
+                    },
+
+                    atualizarStats() {
+                        let ok = 0, pending = 0, conflict = 0;
+                        this.setores.forEach(s => {
+                            if (s.status === 'ok') ok++;
+                            else if (s.status === 'pending') pending++;
+                            else if (s.status === 'conflict') conflict++;
+                        });
+                        this.stats = { total_ok: ok, total_pending: pending, total_conflict: conflict };
+                    },
+
+                    toggleSetor(idx) {
+                        this.setores[idx].expanded = !this.setores[idx].expanded;
+                    }
+                };
+            }
+        </script>
+
         <!-- Two-column grid -->
         <section class="grid grid-cols-12 gap-4 md:gap-5">
 
