@@ -612,10 +612,39 @@
                 <button class="text-athos-muted hover:text-athos-primary transition-colors" aria-label="Downloads" data-od-id="path-0-1-1-0">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                 </button>
-                <button class="relative text-athos-muted hover:text-athos-primary transition-colors" aria-label="Notificações" data-od-id="path-0-1-1-1">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
-                    <span class="absolute top-0 right-0 w-2 h-2 bg-athos-accent rounded-full ring-2 ring-white"></span>
-                </button>
+                <div x-data="{ notifOpen: false, notificacoes: [
+                    { id: 1, icone: '🎂', texto: 'Faltam 2 dias para o Aniversário do Líder da FIRE Leonardo', cor: 'text-athos-accent', bg: 'bg-athos-accent/8' },
+                    { id: 2, icone: '👋', texto: 'Visitante Claudia já foi 4 células seguidas na ONE — Possível cadastramento', cor: 'text-athos-green', bg: 'bg-athos-green/8' },
+                    { id: 3, icone: '🎵', texto: 'Faltam 3 dias para o SPE e a escala dos integrantes do louvor não foi definida', cor: 'text-athos-danger', bg: 'bg-athos-danger/8' }
+                ] }" class="relative">
+                    <button @click="notifOpen = !notifOpen" class="relative text-athos-muted hover:text-athos-primary transition-colors" aria-label="Notificações" data-od-id="path-0-1-1-1">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                        <span class="absolute -top-1 -right-1 w-4 h-4 bg-athos-danger text-white text-[9px] font-bold rounded-full flex items-center justify-center ring-2 ring-white" x-text="notificacoes.length"></span>
+                    </button>
+                    <div x-show="notifOpen" @click.away="notifOpen = false" x-transition.opacity.duration.200ms class="absolute right-0 mt-2 w-80 bg-athos-surface border border-athos-line rounded-xl shadow-lg z-50" style="display:none">
+                        <div class="px-4 py-3 border-b border-athos-line/60">
+                            <h3 class="text-sm font-bold text-athos-text">Notificações</h3>
+                            <p class="text-[10px] text-athos-muted mt-0.5">3 não lidas</p>
+                        </div>
+                        <div class="max-h-72 overflow-y-auto">
+                            <template x-for="(n, i) in notificacoes" :key="n.id">
+                                <div class="flex items-start gap-3 px-4 py-3 hover:bg-athos-surfaceSoft/60 transition-colors cursor-pointer border-b border-athos-line/30 last:border-b-0">
+                                    <div class="w-8 h-8 rounded-lg flex items-center justify-center text-base flex-shrink-0" :class="n.bg">
+                                        <span x-text="n.icone"></span>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-xs text-athos-text leading-snug" x-text="n.texto"></p>
+                                        <p class="text-[10px] text-athos-muted mt-1 font-medium" x-text="'Há ' + (i + 1) + ' hora' + (i > 0 ? 's' : '')"></p>
+                                    </div>
+                                    <span class="w-1.5 h-1.5 rounded-full bg-athos-primary flex-shrink-0 mt-1.5"></span>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="px-4 py-2.5 border-t border-athos-line/60 text-center">
+                            <a href="#" class="text-[11px] font-semibold text-athos-primary hover:text-athos-primaryDark transition-colors">Marcar todas como lidas</a>
+                        </div>
+                    </div>
+                </div>
 
                 <div x-data="{ open: false }" class="relative">
                     <button @click="open = !open" class="flex items-center gap-2 hover:opacity-80 transition-opacity" data-od-id="path-0-1-1-2-0">
