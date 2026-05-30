@@ -479,6 +479,15 @@
             .nav-item span.lbl { display: none; }
             .nav-item.is-active span.lbl { display: inline; }
         }
+        @media (min-width: 721px) and (max-width: 1100px) {
+            .top-header { padding-left: 1.25rem; padding-right: 1.25rem; }
+            .search-block { width: 18rem !important; }
+            .nav-item { padding: 0 0.6rem; font-size: 0.78rem; }
+            .nav-rail-inner { gap: 0.08rem; padding: 0 0.75rem; }
+            .stat-pill { padding: 0.75rem 0.9rem; }
+            .stat-num { font-size: 1.2rem; }
+            .card { padding: 1rem !important; }
+        }
         @media (max-width: 720px) {
             .top-header .search-block { display: none; }
         }
@@ -673,7 +682,7 @@
     </nav>
 
     <!-- ─────────────────── MAIN CANVAS ─────────────────── -->
-    <main class="flex-1 px-6 lg:px-8 py-6 max-w-[1500px] w-full mx-auto" data-od-id="path-2">
+    <main class="flex-1 px-4 md:px-6 lg:px-8 py-6 max-w-[1500px] w-full mx-auto" data-od-id="path-2">
 
         <!-- Welcome strip -->
         <section class="flex flex-col md:flex-row md:items-end md:justify-between gap-3 mb-6" data-od-id="path-2-0">
@@ -695,7 +704,7 @@
         </section>
 
         <!-- General (non-financial) stats -->
-        <section class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" data-od-id="path-2-1">
+        <section class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4 mb-6" data-od-id="path-2-1">
             <div class="stat-pill" data-od-id="path-2-1-0">
                 <div class="stat-icon">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
@@ -750,7 +759,7 @@
         </section>
 
         <!-- ─────────────────── NEW DATA AREA ─────────────────── -->
-        <section class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6" data-od-id="path-2-2">
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5 mb-6" data-od-id="path-2-2">
 
             <!-- Frequência de Células -->
             <div class="card p-5" data-od-id="path-2-2-0">
@@ -840,10 +849,10 @@
         </section>
 
         <!-- Two-column grid -->
-        <section class="grid grid-cols-12 gap-5" data-od-id="path-2-3">
+        <section class="grid grid-cols-12 gap-4 md:gap-5" data-od-id="path-2-3">
 
             <!-- ── LEFT COLUMN (Notas, Programação, Avisos) ── -->
-            <div class="col-span-12 lg:col-span-8 flex flex-col gap-5" data-od-id="path-2-3-0">
+            <div class="col-span-12 md:col-span-7 lg:col-span-8 flex flex-col gap-5" data-od-id="path-2-3-0">
 
                 <!-- Notas / Esboços -->
                 <div class="card p-5" x-data="{
@@ -1007,7 +1016,7 @@
             </div>
 
             <!-- ── RIGHT COLUMN (Mini Calendário, Lembretes) ── -->
-            <aside class="col-span-12 lg:col-span-4 flex flex-col gap-5" data-od-id="path-2-3-1">
+            <aside class="col-span-12 md:col-span-5 lg:col-span-4 flex flex-col gap-5" data-od-id="path-2-3-1">
 
                 <!-- Calendar (Mini -> expands to modal) -->
                 <div class="card p-5" x-data="{ showModal: false }" data-od-id="path-2-3-1-0">
